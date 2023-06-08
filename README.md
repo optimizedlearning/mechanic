@@ -9,6 +9,6 @@ optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
 ```
 with:
 ```
-optimizer = mechanize(torch.optim.SGD)(model.parameters(), lr=0.01)
+optimizer = mechanize(torch.optim.SGD)(model.parameters(), lr=1.0)
 ```
 That's it! The new optimizer should no longer require tuning the learning rate scale!
