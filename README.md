@@ -11,7 +11,7 @@ with:
 ```python
 optimizer = mechanize(torch.optim.SGD)(model.parameters(), lr=0.01)
 ```
-That's it! The new optimizer should no longer require tuning the learning rate scale!
+That's it! The new optimizer should no longer require tuning the learning rate scale! That is, the optimizer should now be very robust to heavily mis-specified values of `lr`.
 
 ## Options
 It is possible to play with the configuration of Mechanic, although this should be unecessary:
