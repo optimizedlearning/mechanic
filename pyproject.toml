@@ -1,0 +1,37 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mechanic-pytorch"
+dynamic = ["version"]
+description = 'black box tuning of optimizers'
+readme = "README.md"
+requires-python = ">=3.7"
+license = "Apache-2.0"
+keywords = []
+authors = [
+  { name = "Ashok Cutkosky", email = "ashok@cutkosky.com" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = [
+  "torch>=1.13.1",
+]
+
+[project.urls]
+Documentation = "https://github.com/optimizedlearning/mechanic#readme"
+Issues = "https://github.com/optimizedlearning/mechanic/issues"
+Source = "https://github.com/optimizedlearning/mechanic"
+
+[tool.hatch.version]
+path = "src/mechanic_pytorch/__about__.py"

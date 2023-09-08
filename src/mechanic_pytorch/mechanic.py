@@ -3,9 +3,6 @@ from typing import Tuple, Any, Callable, Dict
 import torch
 
 
-logger = logging.getLogger(__name__)
-
-
 def _init_state(
         optimizer: torch.optim.Optimizer,
         p_ref: Dict[torch.Tensor, torch.Tensor],
@@ -296,8 +293,9 @@ def mechanize(
         store_delta: whether to store the offsets or recompute them on-the-fly.
         log_func: function to call to log data.
             The input to this function will be a dictionary {'iter_count': iteration count, 's': s_value}
-            If None, log_func will be:
+            If None, log_func will be set to:
             def log_func(data):
+                logger = logging.getLogger(__name__)
                 return logger.info(f"(iter={data['iter_count']}), s_sum (global scaling): {data['s']}")
         log_every: how often (in steps) to call log_func.
     
@@ -321,6 +319,7 @@ def mechanize(
     '''
 
     if log_func is None:
+        logger = logging.getLogger(__name__)
         log_func = lambda data: logger.info(f"(iter={data['iter_count']}), s_sum (global scaling): {data['s']}")
 
     class Mechanized(Base, Mechanic):
