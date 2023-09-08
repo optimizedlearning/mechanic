@@ -150,7 +150,7 @@ def _step(
 
     # Re-enable gradients and run the base optimizer step
     torch.set_grad_enabled(prev_grad)
-    loss = base_step(skip_once_closure)
+    result = base_step(skip_once_closure)
     torch.set_grad_enabled(False)
 
     # init state after base_step in case base_step only initializes its
@@ -227,7 +227,6 @@ def _step(
     sum_squared_products = mechanic_state['sum_squared_products']   # called "v" in paper
 
     mechanic_state['iter_count'] += 1
-    log_every = mechanic_state['log_every']
 
 
     max_product.copy_(torch.maximum(
@@ -243,9 +242,6 @@ def _step(
     s.copy_(wealth / (torch.sqrt(sum_squared_products) + eps))
 
 
-    if log_every > 0 and mechanic_state['iter_count']%log_every == 0:
-        logging.info(f"(k={mechanic_state['iter_count']}), s_sum (global scaling): {torch.sum(s).item()}")
-
     for group in optimizer.param_groups:
         for p in group['params']:
 
@@ -256,9 +252,17 @@ def _step(
             delta = deltas[p]
             p.copy_(p_ref + delta * max(torch.sum(s), 0.0))
 
+
+
+    log_data = {
+        'iter_count': mechanic_state['iter_count'],
+        's': torch.sum(s).item(),
+    }
+
     torch.set_grad_enabled(prev_grad)
 
-    return loss
+
+    return result, log_data
 
 
 # Empty class used so that we can do isinstance(mechanize(SGD), Mechanic)
@@ -276,6 +280,7 @@ def mechanize(
         s_init: float = 1e-8,
         eps: float = 1e-8,
         store_delta: bool = False,
+        log_func: Any = None,
         log_every: int = 0):
     '''
     Wrap a base optimizer class in a mechanic tuner. The mechanized optimizer
@@ -289,7 +294,12 @@ def mechanize(
         s_init: initial scale value.
         eps: small number for numerical precision.
         store_delta: whether to store the offsets or recompute them on-the-fly.
-        log_every: how often (in steps) to log the scale values computed by mechanic.
+        log_func: function to call to log data.
+            The input to this function will be a dictionary {'iter_count': iteration count, 's': s_value}
+            If None, log_func will be:
+            def log_func(data):
+                return logger.info(f"(iter={data['iter_count']}), s_sum (global scaling): {data['s']}")
+        log_every: how often (in steps) to call log_func.
     
     Returns: a new class Mechanized that tunes the base class.
 
@@ -310,6 +320,9 @@ def mechanize(
     incorrect things.
     '''
 
+    if log_func is None:
+        log_func = lambda data: logger.info(f"(iter={data['iter_count']}), s_sum (global scaling): {data['s']}")
+
     class Mechanized(Base, Mechanic):
         '''
         Wraps a base algorithm as a Mechanic instance.
@@ -317,7 +330,12 @@ def mechanize(
 
         def step(self, closure=None):
 
-            return _step(self, super().step, s_decay, betas, s_init, eps, store_delta, log_every, closure)
+            result, log_data = _step(self, super().step, s_decay, betas, s_init, eps, store_delta, log_every, closure)
+            mechanic_state = self.state['_mechanic']
+            if log_every > 0 and mechanic_state['iter_count']%log_every == 0:
+                log_func(log_data)
+            
+            return result
 
     Mechanized.__name__ += Base.__name__
 
