@@ -1,10 +1,5 @@
 # Mechanic: black-box tuning of optimizers
 
-[![PyPI - Version](https://img.shields.io/pypi/v/mechanic.svg)](https://pypi.org/project/mechanic)
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/mechanic.svg)](https://pypi.org/project/mechanic)
-
------
-
 Based on the paper: https://arxiv.org/abs/2306.00144
 
 Be aware that all experiments reported in the paper were run using the [JAX version of mechanic](https://github.com/google-deepmind/optax/blob/master/optax/_src/contrib/mechanic.py), which is available in [optax](https://optax.readthedocs.io/en/latest/) via `optax.contrib.mechanize`. 
