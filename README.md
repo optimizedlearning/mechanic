@@ -15,6 +15,7 @@ from mechanic_pytorch import mechanize
 optimizer = mechanize(torch.optim.SGD)(model.parameters(), lr=1.0)
 # You can set the lr to anything here.
 # However, excessively small values may cause numerical precision issues.
+# Mechanic's scale factor will be multiplied by the base optimizer's learning rate.
 ```
 That's it! The new optimizer should no longer require tuning the learning rate scale! That is, the optimizer should now be very robust to heavily mis-specified values of `lr`.
 
@@ -34,7 +35,7 @@ optimizer = mechanize(torch.optim.SGD, s_decay=0.0, betas=(0.999,0.999999), stor
 * The option `s_decay` is a bit like a weight-decay term that empirically is helpful for smaller datasets. We use a default of 0.01 in all our experiments. For larger datasets, smaller values (even 0.0) often worked as well.
 * The option `betas` is a list of exponential weighting factors used internally in mechanic. They are NOT related to beta values found in Adam. In theory, it should be safe to provide a large list of possibilities here. The default settings of `(0.9,0.99,0.999,0.9999,0.99999,0.999999)` seem to work will in a range of tasks.
 * `s_init` is the initial value for the mechanic learning rate. It should be an *underestimate* of the correct learning rate, and it can safely be set to a very small value (default 1e-8), although it cannot be set to zero. In particular, the  theoretical analysis of mechanic includes a log(1/s_init) term. This is very robust to small values, but will eventually blow up if you make `s_init` absurdly small.
-* You can customize the logging behavior by setting the `log_func` argument. This enables logging of the scale factors mechanic is using.
+* You can customize the logging behavior by setting the `log_func` argument. This enables logging of the scale factors mechanic is using. Note that Mechanic produces a scale factor `s` that is multiplied by the base optimizer's update. So, if the base optimizer has a learning rate that is different than 1, the value of `s` should be multiplied by that base optimizer's learning rate in order to find the effective learning rate that is being applied.
 
 
 
