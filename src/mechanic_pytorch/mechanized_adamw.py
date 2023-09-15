@@ -89,8 +89,8 @@ class MechanizedAdamW(torch.optim.Optimizer):
                 grads[p] = p.grad
 
                 state = self.state[p]
-                param_norm += torch.sum(p * p)
-                grad_norm += torch.sum(p.grad * p.grad)
+                param_norm += torch.sum(p * p).to(param_norm.device)
+                grad_norm += torch.sum(p.grad * p.grad).to(grad_norm.device)
 
                 # State initialization
                 if len(state) == 0:
@@ -160,7 +160,7 @@ class MechanizedAdamW(torch.optim.Optimizer):
             dot_prod += torch.sum(
                 self.state[p]["offset"]
                 * (grads[p] + s_sum * grad_norm / (param_norm + eps))
-            )
+            ).to(dot_prod.device)
         return dot_prod
 
     def update_s(self, dot_prod):
@@ -204,7 +204,7 @@ class MechanizedAdamW(torch.optim.Optimizer):
         if step % self.log_every == 0:
             self.log_func({
             "iter_count": step,
-            "s_sum": s_sum,
+            "s": s_sum,
             })
 
         step.add_(1.0)
