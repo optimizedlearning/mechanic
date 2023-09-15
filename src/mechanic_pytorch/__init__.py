@@ -3,3 +3,4 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from .mechanic import mechanize, is_mechanized, Mechanic
+from .mechanized_adamw import MechanizedAdamW

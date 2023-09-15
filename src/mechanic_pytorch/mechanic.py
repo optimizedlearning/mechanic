@@ -232,7 +232,7 @@ def _step(
     sum_squared_products.mul_(
         betas**2).add_(torch.square(inner_product))
     reward.mul_(betas).sub_(s * inner_product)
-    reward.copy_(torch.clamp(reward, min=torch.zeros_like(reward)))
+    reward.clamp_(min=torch.zeros_like(reward))
 
     wealth = max_product * s_init / len(betas) + reward
 
