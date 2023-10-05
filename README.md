@@ -41,4 +41,4 @@ optimizer = mechanize(torch.optim.SGD, s_decay=0.0, betas=(0.999,0.999999), stor
 
 ## License
 
-`mechanic` is distributed under the terms of the [Apache-2.0](https://spdx.org/licenses/Apache-2.0.html) license.
+`mechanic` is distributed under the terms of the [MIT](https://spdx.org/licenses/MIT.html) license
