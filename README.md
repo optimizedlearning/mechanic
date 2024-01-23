@@ -2,7 +2,7 @@
 
 Based on the paper: https://arxiv.org/abs/2306.00144
 
-Be aware that all experiments reported in the paper were run using the [JAX version of mechanic](https://github.com/google-deepmind/optax/blob/master/optax/_src/contrib/mechanic.py), which is available in [optax](https://optax.readthedocs.io/en/latest/) via `optax.contrib.mechanize`. 
+Be aware that all experiments reported in the paper were run using the [JAX version of mechanic](https://github.com/google-deepmind/optax/blob/main/optax/contrib/mechanic.py), which is available in [optax](https://optax.readthedocs.io/en/latest/) via `optax.contrib.mechanize`. 
 
 Mechanic aims to remove the need for tuning a learning rate scalar (i.e. the maximum learning rate in a schedule).
 You can use it with any pytorch optimizer and schedule. Simply replace:
